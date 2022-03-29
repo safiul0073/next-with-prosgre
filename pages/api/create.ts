@@ -12,6 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     const {user} = await req.body;
+
     const saveUser = await prisma.user.create({data: {...user} });
     res.status(200).json(saveUser);
   } catch (error) {

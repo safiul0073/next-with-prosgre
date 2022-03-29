@@ -21,6 +21,7 @@ export default function Home({ initilaData }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState()
+  const [isUpadate, setIsUpadate] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -45,6 +46,19 @@ export default function Home({ initilaData }) {
   ]
 
   const handleRoleChange = (e, {value}) => setRole(value)
+
+  const deleteUser = async (data) : Promise<void> => {
+    const user = fatcher('/api/delete', {id: data.id})
+    setUsers(users.filter(user => user.id !== data.id))
+  }
+
+  const editUser = async (data) : Promise<void> => {
+    setName(data.name)
+    setEmail(data.email)
+    setPassword(data.password)
+    setRole(data.role)
+    setIsUpadate(true)
+  }
   
   return (
     <div>
@@ -70,7 +84,7 @@ export default function Home({ initilaData }) {
         </div>
         <div>
           <label htmlFor="role">Role</label>
-          <select id="role" value={role} onChange={handleRoleChange}>
+          <select id="role" value={role} onChange={() => handleRoleChange}>
             {options.map(option => (
               <option key={option.value} value={option.value}>{option.label}</option>
             ))}
@@ -78,6 +92,39 @@ export default function Home({ initilaData }) {
         </div>
         <button type="submit">Submit</button>
       </form>
+
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Role</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map(user => (
+              <tr key={user.id}>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.password}</td>
+                <td>{user.role}</td>
+                <td>
+                  <button onClick={() => editUser(user)}>
+                    update
+                  </button>
+                  <button onClick={() => deleteUser(user)}>
+                    delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          
+        </table>
+      </div>
       
       </div>
   )
