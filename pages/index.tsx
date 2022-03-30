@@ -4,6 +4,7 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import prisma from '../lib/prisma'
 import { fatcher } from '../utils/fatcher'
+import { updateFatcher } from '../utils/updateFatcher'
 
 export async function getServerSideProps() {
   const users: Prisma.UserUncheckedCreateInput[] = await prisma.user.findMany()
@@ -22,15 +23,22 @@ export default function Home({ initilaData }) {
   const [password, setPassword] = useState('')
   const [role, setRole] = useState()
   const [isUpadate, setIsUpadate] = useState(false)
+  const [id, setId] = useState();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const body: Prisma.UserCreateInput = {
+    const body: Prisma.UserUncheckedCreateInput = {
+      id,
       name,
       email,
       password,
       role,
     };
+
+    if (isUpadate) {
+      updateUser(body)
+      return
+    }
     const user = fatcher('/api/create', {user: body});
     setUsers([...users, body])
     setName('')
@@ -38,6 +46,15 @@ export default function Home({ initilaData }) {
     setPassword('')
     setRole(null)
 
+  }
+
+  const updateUser = (body) => { 
+    const user = updateFatcher('/api/update/', {user: body});
+    setUsers([...users, body])
+    setName('')
+    setEmail('')
+    setPassword('')
+    setRole(null)
   }
 
   const options = [
@@ -53,6 +70,7 @@ export default function Home({ initilaData }) {
   }
 
   const editUser = async (data) : Promise<void> => {
+    setId(data.id)
     setName(data.name)
     setEmail(data.email)
     setPassword(data.password)

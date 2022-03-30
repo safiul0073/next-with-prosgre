@@ -1,6 +1,7 @@
-export const fatcher = async (url, data) => {
+export const updateFatcher = async (url, data) => {
+    // console.log(data);
     const response = await fetch(url, {
-        method: data ? 'POST' : 'GET',
+        method: 'POST',
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
@@ -10,4 +11,3 @@ export const fatcher = async (url, data) => {
 
     return await response.json();
 }
-
