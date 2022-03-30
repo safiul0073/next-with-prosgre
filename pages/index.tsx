@@ -55,6 +55,7 @@ export default function Home({ initilaData }) {
     setEmail('')
     setPassword('')
     setRole(null)
+    setId(null)
   }
 
   const options = [
@@ -131,7 +132,7 @@ export default function Home({ initilaData }) {
                 <td>{user.role}</td>
                 <td>
                   <button onClick={() => editUser(user)}>
-                    update
+                    Edit
                   </button>
                   <button onClick={() => deleteUser(user)}>
                     delete
